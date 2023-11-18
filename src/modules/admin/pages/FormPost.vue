@@ -63,10 +63,10 @@ const form = ref({
 
 onMounted(async () => {
     if ($route.params.id) {
+        verifyPermissionEdit()
         const response = await getById($route.params.id)
         form.value = response.data[0]
     }
-    verifyPermissionEdit()
 })
 
 const $store = useAuthStore()
@@ -89,21 +89,19 @@ onMounted(async () => {
 })
 
 const verifyPermissionEdit = async () => {
-    if ($route.params.id) {
-        const id = $route.params.id
-        await api.post(`/api/verify-permission-edit/${id}`, { token: Cookie.get('_myapp_token') })
-            .then((res) => {
-                if (res.data.Type) {
-                    return;
-                }
-                try {
-                    notifyError('Voce nao tem permissao para alterar esse registro!')
-                    return $router.push('/404')
-                } catch (error) {
-                    return handleErros(error)
-                }
-            })
-    }
+    const id = $route.params.id
+    await api.post(`/api/verify-permission-edit/${id}`, { token: Cookie.get('_myapp_token') })
+        .then((res) => {
+            if (res.data.Type) {
+                return;
+            }
+            try {
+                notifyError('Voce nao tem permissao para alterar esse registro!')
+                return $router.push('/404')
+            } catch (error) {
+                return handleErros(error)
+            }
+        })
 }
 
 const handleBlurDate = async (value) => {
