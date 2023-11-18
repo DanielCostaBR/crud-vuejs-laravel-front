@@ -73,8 +73,8 @@ export default defineComponent({
         }).onOk(async () => {
           await remove(id)
           notify('Apagado com sucesso!')
+          location.reload()
           await getData()
-          $router.push('/admin')
         })
       } catch (error) {
         throw new Error(error)
